@@ -37,8 +37,18 @@ public class DestroyProjectile : MonoBehaviour
             {
                 other.gameObject.GetComponent<ParticleSystem>().Play();
             }
-            Destroy(other.gameObject, 1f);
-            Destroy(gameObject);
+
+            if (other.gameObject.GetComponent<EnemyAI>())
+            {
+                other.gameObject.GetComponent<EnemyAI>().Die();
+            }
+            else
+            {
+                Destroy(other.gameObject, 1f);
+                Destroy(gameObject);
+            }
+            
+            
         }
     }
 }

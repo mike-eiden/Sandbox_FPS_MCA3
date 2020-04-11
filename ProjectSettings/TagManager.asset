@@ -9,6 +9,8 @@ TagManager:
   - bullet
   - Interactable
   - LM
+  - WanderPoint
+  - Enemy3
   layers:
   - Default
   - TransparentFX

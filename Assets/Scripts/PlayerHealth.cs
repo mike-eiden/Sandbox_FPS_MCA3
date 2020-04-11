@@ -38,7 +38,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private void dealDamage(int amt)
+    public void dealDamage(int amt)
     {
         if (!levelManager.levelOverLock)
         {
