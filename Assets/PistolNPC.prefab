@@ -2112,7 +2112,7 @@ MonoBehaviour:
   chaseDistance: 6
   player: {fileID: 0}
   enemyEyes: {fileID: 6303766951474176840}
-  FOV: 120
+  FOV: 165
   attackRate: 2
   deadVFX: {fileID: 4657544336414681483, guid: f5009ed24531a9f4aa573f59655a28b8, type: 3}
 --- !u!54 &5451949477592866761
