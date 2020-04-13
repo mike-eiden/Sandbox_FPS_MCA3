@@ -154,6 +154,7 @@ Transform:
   - {fileID: 8343724440044864940}
   - {fileID: 4958953549420504527}
   - {fileID: 6303766951474176840}
+  - {fileID: 5405986440154175846}
   m_Father: {fileID: 7818909552701291593}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -187,6 +188,36 @@ Transform:
   - {fileID: 4535127653640749923}
   m_Father: {fileID: 7766451259414194877}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &417117576225236616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5405986440154175846}
+  m_Layer: 0
+  m_Name: EnemyEyes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5405986440154175846
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417117576225236616}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.003, y: 0.111, z: 0.094}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1294036806837357353}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &553452976902356971
 GameObject:
@@ -2080,6 +2111,8 @@ MonoBehaviour:
   attackDistance: 2.5
   chaseDistance: 6
   player: {fileID: 0}
+  enemyEyes: {fileID: 6303766951474176840}
+  FOV: 120
   attackRate: 2
   deadVFX: {fileID: 4657544336414681483, guid: f5009ed24531a9f4aa573f59655a28b8, type: 3}
 --- !u!54 &5451949477592866761

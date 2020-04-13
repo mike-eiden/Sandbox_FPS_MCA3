@@ -11,6 +11,7 @@ TagManager:
   - LM
   - WanderPoint
   - Enemy3
+  - EnemyParent
   layers:
   - Default
   - TransparentFX

@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -18,12 +20,12 @@ public class EnemyAI : MonoBehaviour
 
     public float attackDistance = 2.5f;
     public float chaseDistance = 6;
-    //public float enemySpeed = 5;
     public GameObject player;
 
+    public Transform enemyEyes;
+    public float FOV; 
+    
     private PlayerHealth playerHealth; 
-	//public GameObject[] spellProjectiles; 
-//	public GameObject wandTip; 
 	public float attackRate = 2;
 	public GameObject deadVFX; 
 
@@ -52,19 +54,12 @@ public class EnemyAI : MonoBehaviour
 
         playerHealth = player.GetComponent<PlayerHealth>(); 
 		
-		//wandTip = GameObject.FindGameObjectWithTag("WandTip");
-		
-		//enemyHealth = GetComponent<EnemyHealth>();
-		
-		//health = enemyHealth.currentHealth; 
-		
 		isDead = false;
 		
         Initialize();
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         distanceToPlayer = Vector3.Distance(transform.position, 
@@ -110,13 +105,13 @@ public class EnemyAI : MonoBehaviour
 
         agent.stoppingDistance = attackDistance;
 
-        agent.speed = 1.5f;
+        agent.speed = 2f;
 
-        if(Vector3.Distance(transform.position, nextDestination) < 2)
+        if(Vector3.Distance(transform.position, nextDestination) < 3)
         {
             FindNextPoint();
         }
-        else if(distanceToPlayer <= chaseDistance)
+        else if(InFOV())
         {
             currentState = FSMStates.Chase;
         }
@@ -133,7 +128,7 @@ public class EnemyAI : MonoBehaviour
         
         agent.stoppingDistance = attackDistance;
 
-        agent.speed = 3; 
+        agent.speed = 3f; 
 
         nextDestination = player.transform.position;
 
@@ -143,6 +138,7 @@ public class EnemyAI : MonoBehaviour
         }
         else if(distanceToPlayer > chaseDistance)
         {
+	        FindNextPoint();
             currentState = FSMStates.Patrol;
         }
 
@@ -186,8 +182,18 @@ public class EnemyAI : MonoBehaviour
     {
         nextDestination = wanderPoints[currentDestinationIndex].transform.position;
 
-        currentDestinationIndex = (currentDestinationIndex + 1) 
-            % wanderPoints.Length;
+        // Promote random wandering vs. circular wandering
+        int randomDes = Random.Range(0, wanderPoints.Length);
+
+        if (randomDes == currentDestinationIndex)
+        {
+	        currentDestinationIndex = (currentDestinationIndex + 1)
+	                                  % wanderPoints.Length;
+        }
+        else
+        {
+	        currentDestinationIndex = randomDes; 
+        }
 
         agent.SetDestination(nextDestination);
 
@@ -215,7 +221,15 @@ public class EnemyAI : MonoBehaviour
 	}
 	
 	private void OnDestroy() {
-		Instantiate(deadVFX, deadTransform.position, Quaternion.Euler(new Vector3(-90, 0, 0))); 
+		try
+		{
+			Instantiate(deadVFX, deadTransform.position, Quaternion.Euler(new Vector3(-90, 0, 0))); 
+		}
+		catch (Exception e)
+		{
+			// Clean up console log errors when an EnemyAI gets destroyed on scene change
+			Debug.Log("Handled -> " + e.Message);
+		}
 	}
 
     private void OnDrawGizmos()
@@ -226,6 +240,32 @@ public class EnemyAI : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, chaseDistance);
 
+        Vector3 frontRay = enemyEyes.position + (enemyEyes.forward * chaseDistance);
+        Vector3 leftRay = Quaternion.Euler(0, FOV * 0.5f, 0) * frontRay; 
+        Vector3 rightRay = Quaternion.Euler(0, -FOV * 0.5f, 0) * frontRay; 
+
+		Debug.DrawLine(enemyEyes.position, frontRay, Color.cyan);
+		Debug.DrawLine(enemyEyes.position, leftRay, Color.cyan);
+		Debug.DrawLine(enemyEyes.position, rightRay, Color.cyan);
+    }
+
+    private bool InFOV()
+    {
+	    RaycastHit hit; 
+	    
+	    Vector3 directionToPlayer = player.transform.position - enemyEyes.position;
+
+	    if (Vector3.Angle(directionToPlayer, enemyEyes.forward) <= FOV)
+	    {
+		    if (Physics.Raycast(enemyEyes.position, directionToPlayer, out hit, chaseDistance))
+		    {
+			    return hit.collider.CompareTag("Player");
+		    }
+
+		    return false; 
+	    }
+
+	    return false; 
     }
 
     public void Die()
