@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
@@ -78,9 +80,12 @@ public class LevelManager : MonoBehaviour
 
         if (currentLevel == 1)
         {
-            level1.SetActive(true);
-            level2.SetActive(false);
-            level3.SetActive(false);
+            // Need to make sure we don't load the same scene twice i.e. on a reset after death
+            UnloadAllLevels();
+            SceneManager.LoadScene("Level1", LoadSceneMode.Additive);
+//            level1.SetActive(true);
+//            level2.SetActive(false);
+//            level3.SetActive(false);
             enemySpawner.GetComponent<EnemySpawner>().enemy2enable = false;
             foreach (Transform child in level1.transform)
             {
@@ -89,9 +94,13 @@ public class LevelManager : MonoBehaviour
         }
         if (currentLevel == 2)
         {
-            level1.SetActive(false);
-            level2.SetActive(true);
-            level3.SetActive(false);
+            // Need to make sure we don't load the same scene twice i.e. on a reset after death
+            UnloadAllLevels();
+            SceneManager.LoadScene("Level2", LoadSceneMode.Additive);
+            
+//            level1.SetActive(false);
+//            level2.SetActive(true);
+//            level3.SetActive(false);
             enemySpawner.GetComponent<EnemySpawner>().enemy2enable = true;
             foreach (Transform child in level2.transform)
             {
@@ -100,9 +109,12 @@ public class LevelManager : MonoBehaviour
         }
         if (currentLevel == 3)
         {
-            level1.SetActive(false);
-            level2.SetActive(false);
-            level3.SetActive(true);
+            // Need to make sure we don't load the same scene twice i.e. on a reset after death
+            UnloadAllLevels();
+            SceneManager.LoadScene("Level3", LoadSceneMode.Additive);
+//            level1.SetActive(false);
+//            level2.SetActive(false);
+//            level3.SetActive(true);
             enemySpawner.GetComponent<EnemySpawner>().enemy2enable = true;
             foreach (Transform child in level3.transform)
             {
@@ -137,6 +149,37 @@ public class LevelManager : MonoBehaviour
     {
         score++; 
         scoreText.text = "Score = " + score; 
+    }
+
+    private void UnloadAllLevels()
+    {
+        try
+        {
+            SceneManager.UnloadSceneAsync("Level1");
+        }
+        catch (ArgumentException e)
+        {
+            //Catch and Release 
+            Debug.Log( "Handled -> " + e.Message);
+        }
+        try
+        {
+            SceneManager.UnloadSceneAsync("Level2");
+        }
+        catch (ArgumentException e)
+        {
+            //Catch and Release 
+            Debug.Log( "Handled -> " + e.Message);
+        }
+        try
+        {
+            SceneManager.UnloadSceneAsync("Level3");
+        }
+        catch (ArgumentException e)
+        {
+            //Catch and Release 
+            Debug.Log( "Handled -> " + e.Message);
+        }
     }
     
 }
